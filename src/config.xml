@@ -1,0 +1,108 @@
+<?xml version="1.0" ?>
+<!DOCTYPE config SYSTEM "http://www.matsim.org/files/dtd/config_v2.dtd">
+<config>
+
+	<module name="global">
+		<param name="randomSeed" value="4711" />
+		<param name="coordinateSystem" value="EPSG:3006" />
+		<param name="numberOfThreads" value="18" /> <!-- 10 cores in total -->
+	</module>
+
+	<module name="network">
+		<param name="inputNetworkFile" value="network.xml.gz" />
+	</module>
+
+	<module name="plans">
+		<param name="inputPlansFile" value="plans_6.xml.gz" />
+	</module>
+
+	<module name="controler">
+		<param name="outputDirectory" value="./output_6" />
+		<param name="firstIteration" value="0" />
+		<param name="lastIteration" value="50" />
+		<param name="eventsFileFormat" value="xml" />
+		<param name="mobsim" value="qsim" />
+	</module>
+
+	<module name="qsim">
+		<!-- "start/endTime" of MobSim (00:00:00 == take earliest activity time/ run as long as active vehicles exist) -->
+		<param name="startTime" value="00:00:00" />
+		<param name="endTime" value="30:00:00" />
+		<param name="flowCapacityFactor" value=".1" /> <!-- 100% of agents (cars) is used -->
+		<param name="storageCapacityFactor" value=".1" /> <!-- 100% of agents (cars) is used -->
+		<param name = "snapshotperiod"	value = "00:00:00"/> <!-- 00:00:00 means NO snapshot writing -->
+	</module>
+
+	<module name="planCalcScore">
+		<param name="learningRate" value="1.0" />
+		<param name="BrainExpBeta" value="2.0" />
+		<param name="writeExperiencedPlans" value="true" />
+		<parameterset type="scoringParameters">
+		<param name="lateArrival" value="-18" />
+		<param name="earlyDeparture" value="-0" />
+		<param name="performing" value="+6" />
+		<param name="waiting" value="-0" />
+
+		<parameterset type="modeParams">
+			<param name="mode" value="car"/>
+			<param name="marginalUtilityOfTraveling_util_hr" value="-6.0" />
+		</parameterset>
+		<parameterset type="modeParams">
+			<param name="mode" value="pt"/>
+		</parameterset>
+		<parameterset type="modeParams">
+			<param name="mode" value="walk"/>
+		</parameterset>
+		<parameterset type="modeParams">
+			<param name="mode" value="bike"/>
+		</parameterset>
+
+		<parameterset type="activityParams">
+			<param name="activityType"    value="home" /> <!-- home -->
+			<param name="priority"        value="1" />
+			<param name="typicalDuration" value="12:00:00" />
+		</parameterset>
+		<parameterset type="activityParams">
+			<param name="activityType"    value="other" /> <!-- other -->
+			<param name="typicalDuration" value="1:00:00" />
+		</parameterset>
+		<parameterset type="activityParams">
+			<param name="activityType"    value="school" /> <!-- school -->
+			<param name="priority"        value="1" />
+			<param name="typicalDuration" value="08:00:00" />
+		</parameterset>
+		<parameterset type="activityParams">
+			<param name="activityType"            value="work" /> <!-- work -->
+			<param name="priority"        value="1" />
+			<param name="typicalDuration" value="08:00:00" />
+		</parameterset>
+		</parameterset>
+	</module>
+	
+	<module name="strategy">
+		<param name="maxAgentPlanMemorySize" value="5" /> <!-- 0 means unlimited -->
+
+		<parameterset type="strategysettings">
+			<param name="strategyName" value="BestScore"/>
+			<param name="weight" value="0.6"/>
+		</parameterset>
+
+		<parameterset type="strategysettings">
+			<param name="strategyName" value="TimeAllocationMutator"/>
+			<param name="weight" value="0.2"/>
+		</parameterset>
+
+		<parameterset type="strategysettings">
+			<param name="strategyName" value="ReRoute"/>
+			<param name="weight" value="0.2"/>
+		</parameterset>
+	</module>
+
+	<module name="transit">
+		<param name="useTransit" value="true" />
+		<param name="transitScheduleFile" value="transitSchedule.xml.gz" />
+		<param name="vehiclesFile" value="outputVehiclesFile.xml" />
+		<param name="transitModes" value="pt" />
+	</module>
+
+</config>
